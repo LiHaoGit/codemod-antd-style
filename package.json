@@ -1,0 +1,17 @@
+{
+  "name": "codemod-antd-style",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jscodeshift": "^0.11.3",
+    "eslint": "^8.4.1",
+    "jest": "^27.4.5"
+  },
+  "dependencies": {
+    "jscodeshift": "^0.13.0"
+  }
+}

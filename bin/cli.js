@@ -1,0 +1,1 @@
+const jscodeshiftBin = require.resolve('.bin/jscodeshift');
