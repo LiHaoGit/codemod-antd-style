@@ -42,4 +42,16 @@ describe("add-style", () => {
     `import { Button } from 'antd';\r\nimport "antd/lib/button/style/index";`,
     "配置文件读取 style:true"
   );
+
+  defineInlineTest(
+    transform,
+    {
+      "libraryName": "antd",
+      "libraryDirectory": "es",   // default: lib
+      "style": true
+    },
+    `import { Button } from 'antd';\r\nimport "antd/lib/button/style/css";`,
+    `import { Button } from 'antd';\r\nimport "antd/lib/button/style/css";`,
+    "已导入与配置文件不同形式的样式"
+  );
 });

@@ -5,7 +5,9 @@
  * @property {boolean|string} style - 导入的样式类型.
  */
 
-const importDeclarationRegExp = new RegExp(/antd\/(lib|es)\/([a-z]+)\/style\/(style|css)/)
+const importDeclarationRegExp = new RegExp(/antd\/(lib|es)\/([a-z]+)\/style\/(index|css)/)
+
+
 /**
  *
  * @param {import('jscodeshift').JSCodeshift} j
@@ -29,6 +31,7 @@ function findAntdStyleImport(j, root, options) {
  *
  * @param {string} name
  * @param {Option} options
+ * @returns {string} import like 'import "antd/lib/button/style/css"'
 */
 function buildImport(name, options) {
   let styleType = 'css'
@@ -64,14 +67,23 @@ module.exports = function (file, api, options) {
       //每个组件名称
       path.value.specifiers.forEach((spec) => {
         const name = spec.imported.name.toLowerCase();
+        const newStyleImport = buildImport(name, options)
+        const oldStyleImport = styleImportDeclarations.find(it => it.match(importDeclarationRegExp))
         //构建导入
-        if (!styleImportDeclarations.includes(`antd/lib/${name}/style/css`)) {
+        if (!oldStyleImport) {
           const importStatement = j.importDeclaration(
             [],
-            j.literal(buildImport(name, options))
+            j.literal(newStyleImport)
           );
           //插入
           path.insertAfter(importStatement);
+        } else {
+          const array = importDeclarationRegExp.exec(oldStyleImport)
+          if (array[1] !== options.libraryDirectory || array[3] !== options.style) {
+            console.log(`
+              > ${file.path || ""} 现有的样式导入[${oldStyleImport}]与配置[${newStyleImport}]不符合 
+            `)
+          }
         }
 
       });
